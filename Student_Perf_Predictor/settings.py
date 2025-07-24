@@ -34,6 +34,11 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
 ]
 
+# Additional CSRF settings for Railway deployment
+CSRF_COOKIE_SECURE = False  # Set to True for HTTPS in production
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
+
 
 # Application definition
 

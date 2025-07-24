@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 import joblib
@@ -32,6 +33,7 @@ def home(request):
     # Handle GET requests (initial page load)
     return render(request, 'performace_predictor/home.html')
 
+@csrf_exempt
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('home')
