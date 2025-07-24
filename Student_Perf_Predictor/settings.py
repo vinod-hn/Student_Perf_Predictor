@@ -28,6 +28,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']  # Allow all hosts for Railway deployment
 
+# CSRF settings for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-49d9.up.railway.app',
+    'https://*.railway.app',
+]
+
 
 # Application definition
 
