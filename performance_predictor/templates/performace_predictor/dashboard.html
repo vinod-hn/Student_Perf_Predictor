@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student Performance Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .user-info h1 {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn.logout {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .nav-btn.logout:hover {
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .history-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .history-table tr:hover {
+            background-color: #f8f9ff;
+        }
+
+        .prediction-score {
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .score-excellent {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .score-good {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        .score-needs-improvement {
+            background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+        }
+
+        .no-predictions {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .no-predictions i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .no-predictions h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .empty-state-btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                text-align: center;
+            }
+
+            .dashboard-nav {
+                justify-content: center;
+            }
+
+            .history-table {
+                font-size: 0.9rem;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 10px 8px;
+            }
+
+            .section-header {
+                text-align: center;
+            }
+
+            .user-info h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <h1>Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                <p>Track your academic performance predictions</p>
+            </div>
+            <div class="dashboard-nav">
+                <a href="{% url 'home' %}" class="nav-btn">
+                    <i class="fas fa-magic"></i> New Prediction
+                </a>
+                <a href="{% url 'logout' %}" class="nav-btn logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>{{ total_predictions|default:0 }}</h3>
+                <p>Total Predictions</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-trophy"></i>
+                <h3>
+                    {% if latest_prediction %}
+                        {{ latest_prediction.predicted }}%
+                    {% else %}
+                        --
+                    {% endif %}
+                </h3>
+                <p>Latest Score</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar"></i>
+                <h3>
+                    {% if latest_prediction %}
+                        {{ latest_prediction.timestamp|date:"M d" }}
+                    {% else %}
+                        --
+                    {% endif %}
+                </h3>
+                <p>Last Prediction</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-graduate"></i>
+                <h3>{{ excellent_count|default:0 }}</h3>
+                <p>Excellent Scores</p>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-history"></i>
+                    Prediction History
+                </h2>
+            </div>
+
+            {% if predictions %}
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-calendar"></i> Date</th>
+                            <th><i class="fas fa-clock"></i> Study Hours</th>
+                            <th><i class="fas fa-chart-bar"></i> Previous Score</th>
+                            <th><i class="fas fa-trophy"></i> Predicted Score</th>
+                            <th><i class="fas fa-star"></i> Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prediction in predictions %}
+                            <tr>
+                                <td>{{ prediction.timestamp|date:"M d, Y - H:i" }}</td>
+                                <td>{{ prediction.study_hours }} hrs</td>
+                                <td>{{ prediction.previous_scores }}%</td>
+                                <td>
+                                    <span class="prediction-score 
+                                        {% if prediction.predicted >= 80 %}score-excellent
+                                        {% elif prediction.predicted >= 60 %}score-good
+                                        {% else %}score-needs-improvement{% endif %}">
+                                        {{ prediction.predicted }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if prediction.predicted >= 80 %}
+                                        <i class="fas fa-star" style="color: #28a745;"></i> Excellent
+                                    {% elif prediction.predicted >= 60 %}
+                                        <i class="fas fa-thumbs-up" style="color: #ffc107;"></i> Good
+                                    {% else %}
+                                        <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i> Needs Improvement
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-predictions">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>No Predictions Yet</h3>
+                    <p>Start making predictions to see your performance history here.</p>
+                    <a href="{% url 'home' %}" class="empty-state-btn">
+                        <i class="fas fa-magic"></i> Make Your First Prediction
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive animations
+        document.querySelectorAll('.stat-card').forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.style.animation = 'fadeInUp 0.6s ease forwards';
+        });
+
+        // Add CSS for fadeInUp animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
